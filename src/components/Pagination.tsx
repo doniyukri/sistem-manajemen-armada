@@ -27,12 +27,13 @@ export function Pagination(props: Props) {
   const start = props.countOnPage === 0 ? 0 : props.offset + 1
   const end = props.offset + props.countOnPage
   const totalText = props.total == null ? '…' : String(props.total)
-  const pages = props.total == null || props.total === 0 ? 0 : Math.ceil(props.total / props.pageSize)
+  const pages =
+    props.total == null || props.total === 0 ? 0 : Math.ceil(props.total / props.pageSize)
   const numbers = pages > 0 ? pageWindow(props.page, pages) : []
 
   return (
     <div className="flex flex-col gap-4 border-t-4 border-bar pt-4">
-      <p className="text-sm text-navy" aria-live="polite">
+      <p className="text-sm text-navy tabular-nums" aria-live="polite">
         Menampilkan {start}–{end} dari {totalText} data
       </p>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -41,7 +42,9 @@ export function Pagination(props: Props) {
           <select
             className="rounded border border-line bg-white px-2 py-1.5 text-navy"
             value={props.pageSize}
-            onChange={(event) => props.onPageSizeChange(Number(event.target.value) as PageSize)}
+            onChange={(event) =>
+              props.onPageSizeChange(Number(event.target.value) as PageSize)
+            }
           >
             {PAGE_SIZES.map((size) => (
               <option key={size} value={size}>
@@ -91,7 +94,11 @@ export function Pagination(props: Props) {
           Berikutnya
         </button>
         {props.totalError ? (
-          <button type="button" className="text-sm font-bold text-navy underline" onClick={props.onRetryTotal}>
+          <button
+            type="button"
+            className="text-sm font-bold text-navy underline"
+            onClick={props.onRetryTotal}
+          >
             Coba lagi
           </button>
         ) : null}

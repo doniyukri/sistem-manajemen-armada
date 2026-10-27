@@ -1,5 +1,6 @@
-import { formatBoston, formatCoordinate, routeTitle } from '../../domain/labels.ts'
+import { formatBoston, formatCoordinate } from '../../domain/labels.ts'
 import type { Vehicle } from '../../domain/types.ts'
+import { RouteMark } from '../../components/RouteMark.tsx'
 import { StatusChip } from '../../components/StatusChip.tsx'
 
 export function VehicleCard({
@@ -18,28 +19,8 @@ export function VehicleCard({
         onClick={(event) => onOpen(vehicle.id, event.currentTarget)}
       >
         <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-xs font-bold tracking-wide text-muted uppercase">
-              Kendaraan
-            </p>
-            <h2 className="text-2xl font-bold text-navy">{vehicle.label}</h2>
-          </div>
-          {vehicle.route ? (
-            <span
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-xs font-bold"
-              style={{
-                backgroundColor: vehicle.route.color,
-                color: vehicle.route.textColor,
-              }}
-              title={routeTitle(vehicle.route)}
-            >
-              {(
-                vehicle.route.shortName ||
-                vehicle.route.longName ||
-                vehicle.route.id
-              ).slice(0, 3)}
-            </span>
-          ) : null}
+          <h2 className="text-4xl font-bold leading-none text-navy">{vehicle.label}</h2>
+          {vehicle.route ? <RouteMark route={vehicle.route} /> : null}
         </div>
         <StatusChip status={vehicle.status} />
         <p className="text-sm text-navy">

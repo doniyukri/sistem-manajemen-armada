@@ -36,7 +36,7 @@ Out of scope: a backend, login, create and edit, Redux, Next.js, Storybook, end-
 
 ## Brand Commitments
 
-The product name is Sistem Manajemen Armada. The author named in the interface and the README is Doni Prima Yukri. The interface language is Indonesian. Each vehicle status shows an Indonesian label and the raw API code. Vehicle times use America/New_York and are labeled waktu Boston. The public TransJakarta site is the binding design-language reference. Do not copy its logo, its homepage, or its marketing layout.
+The product name is Sistem Manajemen Armada. The author named in the interface and the README is Doni Prima Yukri. The interface language is Indonesian. Each vehicle status shows an Indonesian label and the raw API code. Vehicle times use America/New_York and are labeled waktu Boston. The header and the ink stay the TransJakarta navy. The visual world is the corridor blade: a navy masthead, a white card, and a route circle large enough to read while walking. Do not copy the TransJakarta logo, its homepage, or its marketing layout.
 
 ## Evidence on Hand
 

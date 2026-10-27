@@ -166,17 +166,19 @@ export function FleetBoard() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-20 bg-navy text-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3 sm:px-6">
-          <p className="text-lg font-bold">Sistem Manajemen Armada</p>
+        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:px-8">
+          <p className="text-[1.625rem] font-bold leading-none">
+            Sistem Manajemen Armada
+          </p>
           <p className="text-sm text-white/80">
             Posisi kendaraan langsung dari API MBTA.
           </p>
         </div>
       </header>
       <main className="flex-1 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-7 sm:px-8">
           <div>
-            <h1 className="text-3xl font-bold text-navy">Kendaraan</h1>
+            <h1 className="text-[2.5rem] font-bold leading-none text-navy">Kendaraan</h1>
             <div className="mt-2 h-1 w-12 bg-bar" />
           </div>
           <section className="rounded-2xl bg-field p-4">
@@ -309,7 +311,7 @@ export function FleetBoard() {
         </div>
       </main>
       <footer className="bg-blue text-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-sm sm:px-6 sm:flex-row sm:justify-between">
+        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-sm sm:flex-row sm:justify-between sm:px-8">
           <p>Doni Prima Yukri · Sistem Manajemen Armada</p>
           <p className="text-white/80">Data posisi dari MBTA</p>
         </div>

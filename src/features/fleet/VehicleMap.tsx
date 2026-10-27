@@ -304,10 +304,11 @@ export function VehicleMap(props: Fix) {
 
   return (
     <section
-      className="relative h-64 w-full overflow-hidden rounded-2xl border border-line"
+      className="relative flex h-64 w-full flex-col overflow-hidden rounded-2xl border border-line"
       aria-label={routeNamed}
     >
-      <div ref={containerRef} className="h-full w-full" />
+      <div className="h-1 shrink-0 bg-bar" aria-hidden="true" />
+      <div ref={containerRef} className="min-h-0 w-full flex-1" />
       {following ? null : (
         <button
           type="button"

@@ -18,6 +18,20 @@ body {
   background: #0846a1;
   color: #06367c;
   font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: #cde6fd;
+  color: #06367c;
+}
+
+html {
+  scrollbar-color: #174da1 #ebf3f9;
+}
+
+input {
+  caret-color: #06367c;
 }
 
 button,

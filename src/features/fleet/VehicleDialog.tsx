@@ -8,6 +8,7 @@ import {
   tripTitle,
 } from '../../domain/labels.ts'
 import type { Vehicle } from '../../domain/types.ts'
+import { RouteMark } from '../../components/RouteMark.tsx'
 import { StatusChip } from '../../components/StatusChip.tsx'
 
 const VehicleMap = lazy(() =>
@@ -72,11 +73,12 @@ export function VehicleDialog(props: Props) {
     >
       <div className="flex max-h-[inherit] flex-col">
         <header className="flex items-start justify-between gap-4 border-b-4 border-bar px-5 py-4">
-          <div>
-            <p className="text-xs font-bold tracking-wide text-muted uppercase">
-              Detail kendaraan
-            </p>
-            <h2 id="vehicle-dialog-title" className="text-2xl font-bold text-navy">
+          <div className="flex items-start gap-4">
+            {vehicle?.route ? <RouteMark route={vehicle.route} /> : null}
+            <h2
+              id="vehicle-dialog-title"
+              className="text-4xl font-bold leading-none text-navy"
+            >
               {vehicle?.label ?? 'Kendaraan'}
             </h2>
           </div>

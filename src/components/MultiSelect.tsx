@@ -157,9 +157,22 @@ export function MultiSelect(props: Props) {
         <span className="truncate">
           {props.disabled ? props.disabledReason : summary}
         </span>
-        <span aria-hidden="true" className="text-bar">
-          ▾
-        </span>
+        <svg
+          viewBox="0 0 12 8"
+          width="12"
+          height="8"
+          aria-hidden="true"
+          className="shrink-0 text-bar"
+        >
+          <path
+            d="M1 1.5 L6 6.5 L11 1.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </button>
       {props.disabled ? (
         <p className="mt-1 text-xs text-muted">{props.disabledReason}</p>
@@ -228,11 +241,22 @@ export function MultiSelect(props: Props) {
                     }`}
                     aria-hidden="true"
                   >
-                    {selected ? '✓' : ''}
+                    {selected ? (
+                      <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+                        <path
+                          d="M5 10.5 L8.5 14 L15 6.5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    ) : null}
                   </span>
                   {option.color ? (
                     <span
-                      className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[10px] font-bold"
+                      className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-xs font-bold"
                       style={{
                         backgroundColor: option.color,
                         color: option.textColor ?? '#fff',
