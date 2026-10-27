@@ -1,0 +1,59 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'PT Sans', ui-sans-serif, system-ui, sans-serif;
+  --color-navy: #06367c;
+  --color-blue: #0846a1;
+  --color-bar: #174da1;
+  --color-panel: #cde6fd;
+  --color-field: #ebf3f9;
+  --color-line: #cdd6e4;
+  --color-muted: #5b5b5b;
+  --color-arrive: #35a344;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0846a1;
+  color: #06367c;
+  font-family: var(--font-sans);
+}
+
+button,
+select,
+input {
+  font-family: inherit;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px solid #0846a1;
+  outline-offset: 2px;
+}
+
+dialog.vehicle-dialog {
+  width: min(40rem, calc(100vw - 2rem));
+  max-height: min(90vh, 48rem);
+  margin: auto;
+  padding: 0;
+  border: none;
+  border-radius: 1rem;
+  color: #06367c;
+}
+
+dialog.vehicle-dialog::backdrop {
+  background: rgb(6 54 124 / 48%);
+}
+
+@media (max-width: 640px) {
+  dialog.vehicle-dialog {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+}
