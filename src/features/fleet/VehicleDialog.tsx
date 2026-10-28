@@ -81,7 +81,7 @@ export function VehicleDialog(props: Props) {
               id="vehicle-dialog-title"
               className="text-[1.75rem] font-bold leading-none text-navy"
             >
-              {vehicle?.label ?? 'Kendaraan'}
+              {vehicle?.label ?? 'Armada'}
             </h2>
           </div>
           <button
@@ -102,10 +102,10 @@ export function VehicleDialog(props: Props) {
           </button>
         </header>
         <div className="overflow-y-auto px-5 py-4">
-          {props.loading ? <p>Memuat detail kendaraan…</p> : null}
+          {props.loading ? <p>Memuat detail armada…</p> : null}
           {props.error ? (
             <div role="alert" className="flex flex-col items-start gap-3">
-              <p>Gagal memuat detail kendaraan. Periksa koneksi, lalu coba lagi.</p>
+              <p>Gagal memuat detail armada. Periksa koneksi, lalu coba lagi.</p>
               <button
                 type="button"
                 className="cursor-pointer rounded-lg bg-navy px-3 py-2 text-sm text-white hover:bg-blue"
@@ -139,7 +139,7 @@ export function VehicleDialog(props: Props) {
               )}
               <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2">
                 <Field label="Label" value={vehicle.label} />
-                <Field label="ID kendaraan" value={vehicle.id} />
+                <Field label="ID armada" value={vehicle.id} />
                 <Field
                   label="Latitude dan longitude"
                   value={`${formatCoordinate(vehicle.latitude)}, ${formatCoordinate(vehicle.longitude)}`}

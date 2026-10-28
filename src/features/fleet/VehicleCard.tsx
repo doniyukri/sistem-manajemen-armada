@@ -13,7 +13,7 @@ export function VehicleCard({
   onOpen: (id: string, opener: HTMLElement) => void
 }) {
   return (
-    <article className="flex h-full flex-col rounded-lg bg-white shadow-lift">
+    <article className="fleet-card flex h-full flex-col rounded-lg bg-white shadow-lift">
       <button
         type="button"
         className="flex h-full w-full cursor-pointer flex-col items-start gap-3 px-4 py-4 text-left"

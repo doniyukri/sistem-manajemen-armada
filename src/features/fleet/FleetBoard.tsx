@@ -250,7 +250,7 @@ export function FleetBoard() {
           <div>
             <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
               <h1 className="text-[1.75rem] font-bold leading-none text-navy">
-                Kendaraan
+                Armada
               </h1>
               {vehiclesQuery.dataUpdatedAt > 0 ? (
                 <p className="flex items-center gap-1.5 text-xs text-quiet">
@@ -310,12 +310,12 @@ export function FleetBoard() {
 
           {initialLoading ? (
             <p role="status" className="text-navy">
-              Memuat kendaraan…
+              Memuat armada…
             </p>
           ) : null}
           {boardError ? (
             <div role="alert" className="rounded-lg bg-white p-4 shadow-lift">
-              <p>Gagal memuat kendaraan. Periksa koneksi, lalu coba lagi.</p>
+              <p>Gagal memuat armada. Periksa koneksi, lalu coba lagi.</p>
               <button
                 type="button"
                 className="mt-3 cursor-pointer rounded-lg bg-navy px-3 py-2 text-sm text-white"
@@ -327,11 +327,11 @@ export function FleetBoard() {
           ) : null}
           {!initialLoading && !boardError && vehicles.length === 0 ? (
             <p className="rounded-lg bg-white p-4 shadow-lift">
-              Tidak ada kendaraan untuk filter ini.
+              Tidak ada armada untuk filter ini.
             </p>
           ) : null}
           {vehicles.length > 0 ? (
-            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <ul className="fleet-grid grid grid-cols-1 gap-4 sm:grid-cols-2">
               {vehicles.map((vehicle: Vehicle) => (
                 <li key={vehicle.id}>
                   <VehicleCard vehicle={vehicle} now={now} onOpen={openVehicle} />

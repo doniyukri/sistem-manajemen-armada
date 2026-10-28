@@ -177,7 +177,7 @@ export function MultiSelect(props: Props) {
         </svg>
       </button>
       {open ? (
-        <div className="absolute z-30 mt-1 w-full min-w-72 overflow-hidden rounded-xl border border-line bg-white shadow-[0_8px_24px_rgb(6_54_124/16%)]">
+        <div className="menu-in absolute z-30 mt-1 w-full min-w-72 overflow-hidden rounded-xl border border-line bg-white shadow-[0_8px_24px_rgb(6_54_124/16%)]">
           <div className="border-b border-line p-2">
             <input
               ref={searchRef}

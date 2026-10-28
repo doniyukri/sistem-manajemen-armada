@@ -108,7 +108,7 @@ export function mapOneVehicle(document: {
   included?: JsonResource[]
 }): Vehicle {
   const resource = Array.isArray(document.data) ? document.data[0] : document.data
-  if (!resource) throw new Error('Respons kendaraan kosong.')
+  if (!resource) throw new Error('Respons armada kosong.')
   return mapVehicle(resource, indexIncluded(document.included))
 }
 
