@@ -246,7 +246,7 @@ Three close blues build the blade, pale blues structure the sheet, and one green
 
 The page is a column: sticky masthead, white sheet, Ground Blue footer. The sheet is centered at a maximum of 72rem. Side padding is 16px, and 32px from 640px upward. The sheet's block starts 28px below the masthead. Sections inside the sheet stack with 24px between them. The page title sits 8px above a mark that is 4px tall and 48px wide.
 
-Filters live in one Band Pale panel with 16px of padding. The two fields stack, then sit side by side from 640px with 16px between them. Vehicle cards are one column, two from 640px, and three from 1024px, with 16px gutters.
+Filters live in one Band Pale panel with 16px of padding. The two fields stack, then sit side by side from 640px with 16px between them. Vehicle cards are one column, and two from 640px, with 16px gutters.
 
 The dialog is centered, `min(40rem, 100vw - 2rem)` wide, and at most `min(90vh, 48rem)` tall. At 640px and below it fills the viewport and its corners become square. The map inside it is 16rem tall.
 

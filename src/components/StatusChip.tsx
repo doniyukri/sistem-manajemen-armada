@@ -9,7 +9,9 @@ const TONE: Record<string, string> = {
 export function StatusChip({ status }: { status: string }) {
   const tone = TONE[status] ?? 'bg-navy text-white'
   return (
-    <span className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs ${tone}`}>
+    <span
+      className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs whitespace-nowrap ${tone}`}
+    >
       <span className="font-bold">{statusLabel(status)}</span>
       <span className="font-normal opacity-80">{status}</span>
     </span>

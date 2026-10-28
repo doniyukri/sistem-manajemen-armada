@@ -26,7 +26,7 @@ type Props = {
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div className="border-b border-line py-2">
-      <dt className="text-xs font-bold tracking-wide text-muted uppercase">{label}</dt>
+      <dt className="text-xs font-bold text-muted">{label}</dt>
       <dd className="text-sm text-navy">{value}</dd>
     </div>
   )
@@ -72,19 +72,19 @@ export function VehicleDialog(props: Props) {
       }}
     >
       <div className="flex max-h-[inherit] flex-col">
-        <header className="flex items-start justify-between gap-4 border-b-4 border-bar px-5 py-4">
-          <div className="flex items-start gap-4">
+        <header className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
+          <div className="flex items-center gap-4">
             {vehicle?.route ? <RouteMark route={vehicle.route} /> : null}
             <h2
               id="vehicle-dialog-title"
-              className="text-4xl font-bold leading-none text-navy"
+              className="text-[1.75rem] font-bold leading-none text-navy"
             >
               {vehicle?.label ?? 'Kendaraan'}
             </h2>
           </div>
           <button
             type="button"
-            className="rounded bg-navy px-3 py-2 text-sm text-white"
+            className="cursor-pointer rounded-lg bg-navy px-3 py-2 text-sm text-white"
             onClick={props.onClose}
           >
             Tutup
@@ -97,7 +97,7 @@ export function VehicleDialog(props: Props) {
               <p>Gagal memuat detail kendaraan. Periksa koneksi, lalu coba lagi.</p>
               <button
                 type="button"
-                className="rounded bg-bar px-3 py-2 text-sm text-white"
+                className="cursor-pointer rounded-lg bg-navy px-3 py-2 text-sm text-white"
                 onClick={props.onRetry}
               >
                 Coba lagi

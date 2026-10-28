@@ -304,15 +304,14 @@ export function VehicleMap(props: Fix) {
 
   return (
     <section
-      className="relative flex h-64 w-full flex-col overflow-hidden rounded-2xl border border-line"
+      className="relative flex h-64 w-full flex-col overflow-hidden rounded-lg border border-line"
       aria-label={routeNamed}
     >
-      <div className="h-1 shrink-0 bg-bar" aria-hidden="true" />
       <div ref={containerRef} className="min-h-0 w-full flex-1" />
       {following ? null : (
         <button
           type="button"
-          className="absolute bottom-2 left-2 z-10 cursor-pointer rounded bg-navy px-2 py-1 text-xs text-white"
+          className="absolute bottom-2 left-2 z-10 cursor-pointer rounded-lg bg-navy px-2 py-1 text-xs text-white"
           onClick={() => {
             recenterRef.current = true
             setFollowing(true)

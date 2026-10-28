@@ -32,7 +32,7 @@ export function Pagination(props: Props) {
   const numbers = pages > 0 ? pageWindow(props.page, pages) : []
 
   return (
-    <div className="flex flex-col gap-4 border-t-4 border-bar pt-4">
+    <div className="mt-2 flex flex-col gap-4">
       <p className="text-sm text-navy tabular-nums" aria-live="polite">
         Menampilkan {start}–{end} dari {totalText} data
       </p>
@@ -40,7 +40,7 @@ export function Pagination(props: Props) {
         <label className="flex items-center gap-2 text-sm text-navy">
           Data per halaman
           <select
-            className="rounded border border-line bg-white px-2 py-1.5 text-navy"
+            className="rounded-lg border border-line bg-white px-2 py-1.5 text-navy"
             value={props.pageSize}
             onChange={(event) =>
               props.onPageSizeChange(Number(event.target.value) as PageSize)
@@ -66,7 +66,7 @@ export function Pagination(props: Props) {
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
-          className="rounded bg-bar px-3 py-2 text-sm text-white disabled:bg-line disabled:text-muted"
+          className="cursor-pointer rounded-lg bg-navy px-3 py-2 text-sm text-white disabled:bg-line disabled:text-muted"
           onClick={() => props.onPageChange(props.page - 1)}
           disabled={props.page <= 1}
         >
@@ -76,8 +76,10 @@ export function Pagination(props: Props) {
           <button
             key={number}
             type="button"
-            className={`min-w-10 rounded px-3 py-2 text-sm ${
-              number === props.page ? 'bg-navy text-white' : 'bg-field text-navy'
+            className={`min-w-10 cursor-pointer rounded-lg border px-3 py-2 text-sm ${
+              number === props.page
+                ? 'border-navy bg-navy text-white'
+                : 'border-line bg-white text-navy'
             }`}
             onClick={() => props.onPageChange(number)}
             aria-current={number === props.page ? 'page' : undefined}
@@ -87,7 +89,7 @@ export function Pagination(props: Props) {
         ))}
         <button
           type="button"
-          className="rounded bg-bar px-3 py-2 text-sm text-white disabled:bg-line disabled:text-muted"
+          className="cursor-pointer rounded-lg bg-navy px-3 py-2 text-sm text-white disabled:bg-line disabled:text-muted"
           onClick={() => props.onPageChange(props.page + 1)}
           disabled={!props.hasNext && (pages === 0 || props.page >= pages)}
         >

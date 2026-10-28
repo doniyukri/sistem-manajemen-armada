@@ -11,14 +11,13 @@ export function VehicleCard({
   onOpen: (id: string, opener: HTMLElement) => void
 }) {
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white">
-      <div className="h-1 bg-bar" />
+    <article className="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lift">
       <button
         type="button"
-        className="flex h-full flex-col gap-3 px-4 py-4 text-left cursor-pointer"
+        className="flex h-full w-full cursor-pointer flex-col items-start gap-3 px-4 py-4 text-left"
         onClick={(event) => onOpen(vehicle.id, event.currentTarget)}
       >
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex w-full items-start justify-between gap-3">
           <h2 className="text-4xl font-bold leading-none text-navy">{vehicle.label}</h2>
           {vehicle.route ? <RouteMark route={vehicle.route} /> : null}
         </div>

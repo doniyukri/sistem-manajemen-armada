@@ -144,10 +144,10 @@ export function MultiSelect(props: Props) {
 
   return (
     <div ref={rootRef} className="relative min-w-0 flex-1" onKeyDown={onKeyDown}>
-      <span className="mb-1 block text-sm font-bold text-navy">{props.label}</span>
+      <span className="mb-1 block text-xs font-bold text-muted">{props.label}</span>
       <button
         type="button"
-        className="flex w-full items-center justify-between gap-3 rounded border border-line bg-white px-3 py-2 text-left text-navy disabled:bg-field disabled:text-muted"
+        className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg border border-line bg-white px-3 py-2.5 text-left text-navy disabled:cursor-default disabled:bg-field disabled:text-muted"
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}
@@ -178,7 +178,7 @@ export function MultiSelect(props: Props) {
         <p className="mt-1 text-xs text-muted">{props.disabledReason}</p>
       ) : null}
       {open ? (
-        <div className="absolute z-30 mt-1 w-full min-w-64 rounded border border-line bg-white shadow-[0_5px_6px_rgba(0,0,0,0.25)]">
+        <div className="absolute z-30 mt-1 w-full min-w-64 rounded-lg border border-line bg-white shadow-lift">
           <div className="border-b border-line p-2">
             <input
               ref={searchRef}
@@ -187,7 +187,7 @@ export function MultiSelect(props: Props) {
                 setQuery(event.target.value)
                 setActiveIndex(0)
               }}
-              className="w-full rounded border border-line px-2 py-1.5 text-sm text-navy"
+              className="w-full rounded-lg border border-line px-2 py-1.5 text-sm text-navy"
               placeholder="Cari di daftar"
               aria-label={`Cari ${props.label}`}
               aria-activedescendant={active ? `${listId}-${active.id}` : undefined}

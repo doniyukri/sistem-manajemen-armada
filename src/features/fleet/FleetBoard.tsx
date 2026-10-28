@@ -165,24 +165,18 @@ export function FleetBoard() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-20 bg-navy text-white">
+      <header className="sticky top-0 z-20 border-b border-line bg-white">
         <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:px-8">
-          <p className="text-[1.625rem] font-bold leading-none">
+          <p className="text-[1.375rem] font-bold leading-none text-navy">
             Sistem Manajemen Armada
           </p>
-          <p className="text-sm text-white/80">
-            Posisi kendaraan langsung dari API MBTA.
-          </p>
+          <p className="text-sm text-muted">Posisi kendaraan langsung dari API MBTA.</p>
         </div>
       </header>
-      <main className="flex-1 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-7 sm:px-8">
-          <div>
-            <h1 className="text-[2.5rem] font-bold leading-none text-navy">Kendaraan</h1>
-            <div className="mt-2 h-1 w-12 bg-bar" />
-          </div>
-          <section className="rounded-2xl bg-field p-4">
-            <div className="flex flex-col gap-4 sm:flex-row">
+      <main className="flex-1">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 sm:px-8">
+          <section className="rounded-xl bg-white p-4 shadow-lift">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
               <MultiSelect
                 label="Rute"
                 placeholder="Semua rute"
@@ -237,10 +231,19 @@ export function FleetBoard() {
                 emptyLabel="Tidak ada trip untuk rute ini."
                 errorLabel="Gagal memuat trip."
               />
+              <button
+                type="button"
+                className="cursor-pointer rounded-lg bg-navy px-5 py-2.5 text-sm text-white hover:bg-blue disabled:bg-line disabled:text-muted sm:mt-5 sm:self-start"
+                onClick={reload}
+                disabled={vehiclesQuery.isFetching}
+              >
+                {refreshing ? 'Memuat…' : 'Muat ulang'}
+              </button>
             </div>
           </section>
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <h1 className="text-[1.75rem] font-bold leading-none text-navy">Kendaraan</h1>
             <p className="text-sm text-muted">
               {boardRefreshLabel({
                 updatedAt: vehiclesQuery.dataUpdatedAt,
@@ -249,14 +252,6 @@ export function FleetBoard() {
                 failed: refreshFailed,
               })}
             </p>
-            <button
-              type="button"
-              className="cursor-pointer rounded bg-blue px-3 py-2 text-sm text-white disabled:bg-line disabled:text-muted"
-              onClick={reload}
-              disabled={vehiclesQuery.isFetching}
-            >
-              {refreshing ? 'Memuat…' : 'Muat ulang'}
-            </button>
           </div>
 
           {initialLoading ? (
@@ -265,11 +260,11 @@ export function FleetBoard() {
             </p>
           ) : null}
           {boardError ? (
-            <div role="alert" className="rounded-2xl border border-line bg-field p-4">
+            <div role="alert" className="rounded-lg bg-white p-4 shadow-lift">
               <p>Gagal memuat kendaraan. Periksa koneksi, lalu coba lagi.</p>
               <button
                 type="button"
-                className="mt-3 cursor-pointer rounded bg-bar px-3 py-2 text-sm text-white"
+                className="mt-3 cursor-pointer rounded-lg bg-navy px-3 py-2 text-sm text-white"
                 onClick={reload}
               >
                 Coba lagi
@@ -277,12 +272,12 @@ export function FleetBoard() {
             </div>
           ) : null}
           {!initialLoading && !boardError && vehicles.length === 0 ? (
-            <p className="rounded-2xl border border-line bg-field p-4">
+            <p className="rounded-lg bg-white p-4 shadow-lift">
               Tidak ada kendaraan untuk filter ini.
             </p>
           ) : null}
           {vehicles.length > 0 ? (
-            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {vehicles.map((vehicle: Vehicle) => (
                 <li key={vehicle.id}>
                   <VehicleCard vehicle={vehicle} onOpen={openVehicle} />
@@ -310,10 +305,10 @@ export function FleetBoard() {
           ) : null}
         </div>
       </main>
-      <footer className="bg-blue text-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-sm sm:flex-row sm:justify-between sm:px-8">
+      <footer className="border-t border-line bg-white">
+        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-sm text-navy sm:flex-row sm:justify-between sm:px-8">
           <p>Doni Prima Yukri · Sistem Manajemen Armada</p>
-          <p className="text-white/80">Data posisi dari MBTA</p>
+          <p className="text-muted">Data posisi dari MBTA</p>
         </div>
       </footer>
       {state.vehicleId ? (

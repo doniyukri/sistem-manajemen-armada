@@ -10,12 +10,13 @@
   --color-line: #cdd6e4;
   --color-muted: #5b5b5b;
   --color-arrive: #35a344;
+  --shadow-lift: 0 2px 8px rgb(6 54 124 / 12%);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: #0846a1;
+  background: #ebf3f9;
   color: #06367c;
   font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
@@ -53,7 +54,7 @@ dialog.vehicle-dialog {
   margin: auto;
   padding: 0;
   border: none;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   color: #06367c;
 }
 
