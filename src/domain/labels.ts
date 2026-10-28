@@ -23,6 +23,7 @@ const bostonTime = new Intl.DateTimeFormat('id-ID', {
   year: 'numeric',
   hour: '2-digit',
   minute: '2-digit',
+  second: '2-digit',
 })
 
 const localTime = new Intl.DateTimeFormat('id-ID', {

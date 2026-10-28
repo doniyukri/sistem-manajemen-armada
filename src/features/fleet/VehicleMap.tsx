@@ -14,6 +14,8 @@ import { VEHICLE_POLL_MS, type LngLat } from '../../domain/types.ts'
 
 const STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty'
 const EMPTY_LINE = { type: 'FeatureCollection' as const, features: [] }
+/** Pin has left the middle of the map, so follow is offered again. */
+const OFF_CENTER_PX = 16
 
 type TrackMotion = {
   kind: 'track'
@@ -101,7 +103,10 @@ function reportGap(previous: string | null, next: string | null): number {
 
 export function VehicleMap(props: Fix) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<maplibregl.Map | null>(null)
+  const placeRef = useRef({ longitude: props.longitude, latitude: props.latitude })
   const recenterRef = useRef(true)
+  const buttonShown = useRef(false)
   const latest = useRef(props)
   const [following, setFollowing] = useState(true)
 
@@ -124,6 +129,9 @@ export function VehicleMap(props: Fix) {
       zoom: 15,
       attributionControl: {},
     })
+    mapRef.current = map
+    buttonShown.current = false
+    setFollowing(true)
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
     const pin = createPin()
     const marker = new maplibregl.Marker({ element: pin, rotationAlignment: 'map' })
@@ -254,12 +262,20 @@ export function VehicleMap(props: Fix) {
         map.setPaintProperty('route-line', 'line-color', latest.current.color)
         consumeFix(now)
         const place = sample(now)
+        placeRef.current = place
         marker.setLngLat([place.longitude, place.latitude])
         marker.setRotation(place.bearing)
         paintPin(pin, latest.current.color)
         if (recenterRef.current) {
           map.jumpTo({ center: [place.longitude, place.latitude], zoom: 15 })
           recenterRef.current = false
+        }
+        const pinPx = map.project([place.longitude, place.latitude])
+        const mid = map.project(map.getCenter())
+        const away = Math.hypot(pinPx.x - mid.x, pinPx.y - mid.y) > OFF_CENTER_PX
+        if (away !== buttonShown.current) {
+          buttonShown.current = away
+          setFollowing(!away)
         }
       }
       frame = requestAnimationFrame(loop)
@@ -287,7 +303,6 @@ export function VehicleMap(props: Fix) {
     })
     map.on('dragstart', () => {
       recenterRef.current = false
-      setFollowing(false)
     })
 
     const observer = new ResizeObserver(() => map.resize())
@@ -299,21 +314,30 @@ export function VehicleMap(props: Fix) {
       observer.disconnect()
       marker.remove()
       map.remove()
+      if (mapRef.current === map) mapRef.current = null
     }
   }, [])
 
   return (
     <section
-      className="relative flex h-64 w-full flex-col overflow-hidden rounded-lg border border-line"
+      className="relative flex h-72 w-full flex-col overflow-hidden rounded-lg border border-line"
       aria-label={routeNamed}
     >
       <div ref={containerRef} className="min-h-0 w-full flex-1" />
       {following ? null : (
         <button
           type="button"
-          className="absolute bottom-2 left-2 z-10 cursor-pointer rounded-lg bg-navy px-2 py-1 text-xs text-white"
+          className="absolute bottom-2 left-2 z-10 cursor-pointer rounded-lg bg-navy px-2 py-1 text-xs text-white hover:bg-blue"
           onClick={() => {
-            recenterRef.current = true
+            const map = mapRef.current
+            const place = placeRef.current
+            if (!map) {
+              recenterRef.current = true
+              return
+            }
+            map.jumpTo({ center: [place.longitude, place.latitude], zoom: 15 })
+            recenterRef.current = false
+            buttonShown.current = false
             setFollowing(true)
           }}
         >

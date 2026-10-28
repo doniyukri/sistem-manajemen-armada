@@ -1,5 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { boardRefreshLabel, formatAge, formatSince, formatUpdatedAgo } from './labels.ts'
+import {
+  boardRefreshLabel,
+  formatAge,
+  formatBoston,
+  formatSince,
+  formatUpdatedAgo,
+} from './labels.ts'
+
+describe('formatBoston', () => {
+  it('shows the Boston clock down to the second', () => {
+    expect(formatBoston('2026-10-28T04:13:45Z')).toBe('28 Okt 2026, 00.13.45')
+  })
+})
 
 describe('formatAge', () => {
   const now = 60_000

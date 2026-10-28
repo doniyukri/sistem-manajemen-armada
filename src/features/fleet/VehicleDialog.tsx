@@ -25,9 +25,11 @@ type Props = {
 
 function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border-b border-line py-2">
-      <dt className="text-xs font-bold text-muted">{label}</dt>
-      <dd className="text-sm text-navy">{value}</dd>
+    <div className="min-w-0 bg-white px-4 py-2.5">
+      <dt className="text-xs text-quiet">{label}</dt>
+      <dd className="mt-1 text-sm leading-snug font-bold break-words text-navy">
+        {value}
+      </dd>
     </div>
   )
 }
@@ -72,7 +74,7 @@ export function VehicleDialog(props: Props) {
       }}
     >
       <div className="flex max-h-[inherit] flex-col">
-        <header className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
+        <header className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
           <div className="flex items-center gap-4">
             {vehicle?.route ? <RouteMark route={vehicle.route} /> : null}
             <h2
@@ -84,10 +86,19 @@ export function VehicleDialog(props: Props) {
           </div>
           <button
             type="button"
-            className="cursor-pointer rounded-lg bg-navy px-3 py-2 text-sm text-white"
+            className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-lg text-quiet hover:bg-field hover:text-navy"
+            aria-label="Tutup"
             onClick={props.onClose}
           >
-            Tutup
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+              <path
+                d="M4 4 L12 12 M12 4 L4 12"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
           </button>
         </header>
         <div className="overflow-y-auto px-5 py-4">
@@ -97,7 +108,7 @@ export function VehicleDialog(props: Props) {
               <p>Gagal memuat detail kendaraan. Periksa koneksi, lalu coba lagi.</p>
               <button
                 type="button"
-                className="cursor-pointer rounded-lg bg-navy px-3 py-2 text-sm text-white"
+                className="cursor-pointer rounded-lg bg-navy px-3 py-2 text-sm text-white hover:bg-blue"
                 onClick={props.onRetry}
               >
                 Coba lagi
@@ -105,11 +116,28 @@ export function VehicleDialog(props: Props) {
             </div>
           ) : null}
           {vehicle ? (
-            <>
-              <div className="mb-3">
+            <div className="flex flex-col gap-4">
+              <div className="flex">
                 <StatusChip status={vehicle.status} />
               </div>
-              <dl>
+              {canMap ? (
+                <Suspense fallback={<p className="text-sm">Memuat peta…</p>}>
+                  <VehicleMap
+                    latitude={vehicle.latitude ?? 0}
+                    longitude={vehicle.longitude ?? 0}
+                    bearing={vehicle.bearing}
+                    moving={vehicle.status === 'IN_TRANSIT_TO'}
+                    updatedAt={vehicle.updatedAt}
+                    label={vehicle.label}
+                    color={vehicle.route?.color ?? '#174DA1'}
+                    shapeId={vehicle.shapeId}
+                    shape={vehicle.shape}
+                  />
+                </Suspense>
+              ) : (
+                <p className="text-sm text-muted">Koordinat tidak tersedia.</p>
+              )}
+              <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2">
                 <Field label="Label" value={vehicle.label} />
                 <Field label="ID kendaraan" value={vehicle.id} />
                 <Field
@@ -159,27 +187,7 @@ export function VehicleDialog(props: Props) {
                   }
                 />
               </dl>
-              <div className="mt-4">
-                <p className="mb-2 text-sm font-bold text-navy">Posisi di peta</p>
-                {canMap ? (
-                  <Suspense fallback={<p className="text-sm">Memuat peta…</p>}>
-                    <VehicleMap
-                      latitude={vehicle.latitude ?? 0}
-                      longitude={vehicle.longitude ?? 0}
-                      bearing={vehicle.bearing}
-                      moving={vehicle.status === 'IN_TRANSIT_TO'}
-                      updatedAt={vehicle.updatedAt}
-                      label={vehicle.label}
-                      color={vehicle.route?.color ?? '#174DA1'}
-                      shapeId={vehicle.shapeId}
-                      shape={vehicle.shape}
-                    />
-                  </Suspense>
-                ) : (
-                  <p className="text-sm text-muted">Koordinat tidak tersedia.</p>
-                )}
-              </div>
-            </>
+            </div>
           ) : null}
         </div>
       </div>

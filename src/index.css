@@ -50,13 +50,15 @@ input:focus-visible {
 }
 
 dialog.vehicle-dialog {
-  width: min(40rem, calc(100vw - 2rem));
-  max-height: min(90vh, 48rem);
+  width: min(48rem, calc(100vw - 2rem));
+  max-height: min(92vh, 56rem);
   margin: auto;
   padding: 0;
   border: none;
   border-radius: 0.75rem;
+  background: #fff;
   color: #06367c;
+  box-shadow: 0 8px 24px rgb(6 54 124 / 16%);
 }
 
 dialog.vehicle-dialog::backdrop {
