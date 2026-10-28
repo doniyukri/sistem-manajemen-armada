@@ -4,7 +4,7 @@ Penulis: Doni Prima Yukri.
 
 Aplikasi frontend hanya-baca untuk memantau posisi kendaraan. Data diambil dari [Vehicle API MBTA v3](https://api-v3.mbta.com/docs/swagger/index.html#/Vehicle/ApiWeb_VehicleController_index). Antarmuka berbahasa Indonesia.
 
-Ini bukan armada TransJakarta. Warna dan huruf mengikuti bahasa desain [transjakarta.co.id](https://transjakarta.co.id/). Logo situs itu tidak disalin.
+Ini bukan armada TransJakarta. Warna dan huruf mengikuti bahasa desain [transjakarta.co.id](https://transjakarta.co.id/).
 
 ## Menjalankan
 
