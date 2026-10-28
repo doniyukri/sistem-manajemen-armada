@@ -11,9 +11,16 @@ node_modules
 dist
 dist-ssr
 *.local
-.impeccable/config.local.json
-.impeccable/mocks/
-.impeccable/review/
+
+# Bukan bagian aplikasi yang dijalankan reviewer
+.impeccable/
+Tes Teknis Frontend.pdf
+TODO.md
+DECISIONS.md
+CONTEXT.md
+PRODUCT.md
+DESIGN.md
+docs/
 
 # Editor directories and files
 .vscode/*

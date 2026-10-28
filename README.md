@@ -1,14 +1,14 @@
 # Sistem Manajemen Armada
 
-Papan posisi kendaraan, hanya baca. Data hidup diambil dari [MBTA v3](https://api-v3.mbta.com) di Boston. Antarmuka berbahasa Indonesia.
-
-Ini bukan armada TransJakarta. Warna, huruf, dan bentuk kartu mengikuti bahasa desain [transjakarta.co.id](https://transjakarta.co.id/). Logo situs itu tidak disalin.
-
 Penulis: Doni Prima Yukri.
+
+Aplikasi frontend hanya-baca untuk memantau posisi kendaraan. Data diambil dari [Vehicle API MBTA v3](https://api-v3.mbta.com/docs/swagger/index.html#/Vehicle/ApiWeb_VehicleController_index). Antarmuka berbahasa Indonesia.
+
+Ini bukan armada TransJakarta. Warna dan huruf mengikuti bahasa desain [transjakarta.co.id](https://transjakarta.co.id/). Logo situs itu tidak disalin.
 
 ## Menjalankan
 
-Perlu Node.js 22.
+Perlu Node.js 22. Tidak perlu API key.
 
 ```bash
 npm install
@@ -17,65 +17,46 @@ npm run dev
 
 Buka alamat yang dicetak Vite, biasanya `http://localhost:5173`.
 
-| Perintah          | Fungsi                                                        |
-| ----------------- | ------------------------------------------------------------- |
-| `npm test`        | Aturan murni: query kendaraan, jumlah total, pemangkasan trip |
-| `npm run lint`    | ESLint                                                        |
-| `npm run format`  | Prettier                                                      |
-| `npm run build`   | Pemeriksaan tipe, lalu build produksi                         |
-| `npm run preview` | Menayangkan hasil build                                       |
+| Perintah          | Fungsi                                        |
+| ----------------- | --------------------------------------------- |
+| `npm test`        | Tes aturan query, total, dan pemangkasan trip |
+| `npm run lint`    | ESLint                                        |
+| `npm run build`   | Pemeriksaan tipe, lalu build produksi         |
+| `npm run preview` | Menayangkan hasil build                       |
 
-Tidak perlu API key.
+`npm install` memakai `.npmrc` (`legacy-peer-deps=true`). Pemeriksaan tipe memakai TypeScript 6 lewat perintah `tsc6`. Paket `typescript` di proyek ini adalah alias `@typescript/typescript6`.
 
-`npm install` membaca `.npmrc` (`legacy-peer-deps=true`). npm 10.9 di mesin pengembangan gagal menyusun peer opsional Vitest tanpa pengaturan itu.
+## Arsitektur
 
-Pemeriksaan tipe memakai TypeScript 6 lewat perintah `tsc6`. Paket `typescript` di proyek ini adalah alias `@typescript/typescript6`, karena ESLint belum bisa memuat API TypeScript 7.
+React, function components, hooks, dan Tailwind. TypeScript dalam mode strict. Tidak ada backend.
 
-## Susunan
+### Mengambil data
 
-- `src/api/` satu-satunya kode yang mengenal JSON:API MBTA.
-- `src/domain/` menyimpan Vehicle, Route, Trip, Stop, dan aturan yang tidak mengenal React.
-- `src/features/fleet/` menyimpan papan, hook TanStack Query, dialog, dan peta.
-- `src/components/` menyimpan listbox, chip status, dan paginasi.
+TanStack Query memegang fetch, cache, loading, dan error. Satu-satunya kode yang mengenal JSON:API ada di `src/api/mbta.ts`. `src/domain/mapResource.ts` menyambungkan `included` menjadi `Vehicle`, `Route`, `Trip`, dan `Stop`. Komponen tidak membaca payload mentah.
 
-Komponen tidak membaca `included`. `src/domain/mapResource.ts` menyambungkan relasi menjadi objek domain.
+Daftar kendaraan meminta `page[offset]`, `page[limit]`, `filter[route]`, `filter[trip]`, dan `include=route,trip,stop`. Beberapa rute digabung dengan OR. Beberapa trip digabung dengan OR. Kalau keduanya terisi, keduanya digabung dengan AND.
 
-## Dua jebakan API
+Rute dan trip adalah dropdown multi-pilih. Opsinya dimuat 20 per permintaan, lalu bertambah saat digulir. `GET /trips` tanpa filter mengembalikan 400, jadi menu trip mati sampai sedikitnya satu rute dipilih. Daftar trip adalah jadwal rute itu, bukan hanya trip yang sedang ada kendaraannya. Trip tanpa kendaraan menampilkan "Tidak ada kendaraan untuk filter ini."
 
-Respons daftar tidak berisi `meta.total`. Yang ada `links.first`, `links.last`, dan `links.next`. Jumlah pasti adalah offset halaman terakhir ditambah jumlah baris di halaman itu. Aplikasi meminta halaman terakhir satu kali lagi, lalu menyimpan hasilnya sampai filter atau ukuran halaman berubah. Sebelum permintaan itu selesai, rentang menampilkan `…`.
+### UI
 
-`GET /trips` tanpa `filter[]` mengembalikan 400. Daftar trip dinonaktifkan sampai sedikitnya satu rute dipilih, lalu diminta dengan `filter[route]`.
+Kendaraan tampil sebagai grid kartu: label, status (label Indonesia dan kode mentah), lintang dan bujur, serta waktu update terakhir. Di layar lebar kartunya dua kolom.
 
-Rute yang dipilih digabung dengan OR. Trip yang dipilih digabung dengan OR. Kalau keduanya terisi, keduanya digabung dengan AND.
+Detail dibuka di dialog bawaan browser. Isinya label, status, koordinat, waktu update dalam waktu Boston, rute, trip, dan field tambahan. Peta memakai MapLibre dan gaya OpenFreeMap Liberty, tanpa API key. Penanda mengikuti shape trip dari laporan sebelumnya ke laporan baru, lalu berhenti.
 
-## URL
+Papan, kedua menu, dan dialog masing-masing punya indikator loading dan pesan error yang bisa dicoba lagi.
 
-Halaman, ukuran halaman, id rute, id trip, dan kendaraan yang sedang dibuka ada di query string.
+### Paginasi
 
-`?page=2&pageSize=20&routes=Red,1&trips=Red~78182069&vehicle=y1912`
+Halaman diatur di server lewat `page[offset]` dan `page[limit]`. Ukuran halaman 5, 10, 20, atau 50. Bawaannya 10. Rentang yang tampil berbunyi "Menampilkan {awal}–{akhir} dari {total} data", disertai jumlah halaman dan tombol pindah halaman.
 
-Nilai bawaan tidak ditulis: halaman 1 dan 10 baris. Trip disimpan sebagai `routeId~tripId`. Menghapus sebuah rute ikut menghapus trip yang hanya milik rute itu.
+API tidak mengirim jumlah total. `links.last` hanya membawa offset halaman terakhir. Jumlah pasti adalah offset itu ditambah jumlah baris di halaman terakhir, jadi aplikasi mengirim satu permintaan tambahan ke halaman itu. Hasilnya disimpan sampai filter atau ukuran halaman berubah. Sebelum permintaan selesai, rentang menampilkan `…`.
 
-## Peta dan pembaruan
+## Susunan folder
 
-Peta di dialog memakai MapLibre dan gaya OpenFreeMap Liberty (`https://tiles.openfreemap.org/styles/liberty`), tanpa API key. Berkas peta dimuat saat dialog dibuka. Garis pada peta adalah shape trip kendaraan itu. Penanda bergeser di sepanjang garis itu dari laporan posisi sebelumnya ke laporan baru, lalu berhenti di titik itu sampai laporan berikutnya.
+- `src/api/` adapter MBTA.
+- `src/domain/` tipe, pemetaan JSON:API, dan aturan yang tidak mengenal React.
+- `src/features/fleet/` papan, hook query, dialog, dan peta.
+- `src/components/` dropdown, chip status, dan paginasi.
 
-Halaman kendaraan yang sedang tampil dimuat ulang setiap 30 detik, termasuk saat menu filter atau dialog terbuka. Kartu tidak diredupkan. Jika pembaruan gagal, kartu terakhir tetap tampil. Kendaraan yang sedang dibuka diminta setiap 10 detik, dan kartunya memakai laporan yang lebih baru. Waktu pada kartu dihitung dari laporan kendaraan, misalnya "Diperbarui 12 detik yang lalu" atau "Diperbarui 1 menit 20 detik yang lalu". Di samping judul, umur data yang dimuat tertulis "Diperbarui 12 detik yang lalu". Mengarahkan kursor ke umur itu menampilkan "Data dimuat pukul …" dengan jam komputer peninjau. Ikon info di sampingnya menampilkan "Diperbarui otomatis setiap 30 detik". Kalau pembaruan gagal, kalimat gagal tetap tertulis di bawah judul. Dialog tetap menampilkan waktu Boston.
-
-## Cabang
-
-`main` selalu dalam keadaan yang bisa dijalankan. Commit awal di cabang itu adalah dasar repositori.
-
-Perubahan berikutnya dibuat di cabang singkat, lalu digabung ke `main`:
-
-- `feat/…` untuk perilaku baru
-- `fix/…` untuk perbaikan
-- `chore/…` untuk alat atau dokumentasi yang tidak mengubah layar
-
-Nama cabang memakai bahasa Inggris dan huruf kecil, misalnya `feat/vehicle-map`. Pekerjaan baru tidak ditumpuk langsung di `main`.
-
-## Yang tidak ikut
-
-Backend, login, mengubah data, Redux, Next.js, Storybook, tes end-to-end, paket komponen, GitHub Actions, dan URL hosting.
-
-Keputusan desain ada di `DECISIONS.md`. Naskah video ada di `docs/skrip-demo.md`.
+Halaman, ukuran halaman, rute, trip, dan kendaraan yang sedang dibuka ada di query string. Contoh: `?page=2&pageSize=20&routes=Red,1&trips=Red~78182069&vehicle=y1912`. Halaman 1 dan 10 baris tidak ditulis. Trip disimpan sebagai `routeId~tripId`. Menghapus sebuah rute ikut menghapus trip yang hanya milik rute itu.
