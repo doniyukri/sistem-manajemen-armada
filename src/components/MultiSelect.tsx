@@ -147,7 +147,9 @@ export function MultiSelect(props: Props) {
       <span className="mb-1 block text-xs font-bold text-muted">{props.label}</span>
       <button
         type="button"
-        className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg border border-line bg-white px-3 py-2.5 text-left text-navy disabled:cursor-default disabled:bg-field disabled:text-muted"
+        className={`flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg border bg-white px-3 py-2.5 text-left disabled:cursor-default disabled:bg-field disabled:text-muted ${
+          open ? 'border-navy' : 'border-line'
+        } ${props.disabled || selectedLabels.length === 0 ? 'text-muted' : 'text-navy'}`}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listId}
@@ -162,7 +164,7 @@ export function MultiSelect(props: Props) {
           width="12"
           height="8"
           aria-hidden="true"
-          className="shrink-0 text-bar"
+          className={`shrink-0 text-quiet transition-transform ${open ? 'rotate-180' : ''}`}
         >
           <path
             d="M1 1.5 L6 6.5 L11 1.5"
@@ -174,11 +176,8 @@ export function MultiSelect(props: Props) {
           />
         </svg>
       </button>
-      {props.disabled ? (
-        <p className="mt-1 text-xs text-muted">{props.disabledReason}</p>
-      ) : null}
       {open ? (
-        <div className="absolute z-30 mt-1 w-full min-w-64 rounded-lg border border-line bg-white shadow-lift">
+        <div className="absolute z-30 mt-1 w-full min-w-72 overflow-hidden rounded-xl border border-line bg-white shadow-[0_8px_24px_rgb(6_54_124/16%)]">
           <div className="border-b border-line p-2">
             <input
               ref={searchRef}
@@ -229,7 +228,7 @@ export function MultiSelect(props: Props) {
                   role="option"
                   aria-selected={selected}
                   className={`flex cursor-pointer items-center gap-3 px-3 py-2 text-sm ${
-                    index === activeIndex ? 'bg-panel' : 'bg-white'
+                    index === activeIndex ? 'bg-panel' : selected ? 'bg-field' : 'bg-white'
                   }`}
                   onMouseEnter={() => setActiveIndex(index)}
                   onMouseDown={(event) => event.preventDefault()}
@@ -237,7 +236,7 @@ export function MultiSelect(props: Props) {
                 >
                   <span
                     className={`grid h-5 w-5 shrink-0 place-items-center rounded border ${
-                      selected ? 'border-bar bg-bar text-white' : 'border-line bg-white'
+                      selected ? 'border-bar bg-bar text-white' : 'border-quiet bg-white'
                     }`}
                     aria-hidden="true"
                   >
@@ -276,19 +275,19 @@ export function MultiSelect(props: Props) {
                 </li>
               )
             })}
-            <li ref={sentinelRef} className="px-3 py-2 text-center text-xs text-muted">
-              {props.loadingMore
-                ? 'Memuat lagi…'
-                : props.hasMore
-                  ? 'Gulir untuk memuat lagi'
-                  : ''}
-            </li>
+            {props.loadingMore || props.hasMore ? (
+              <li ref={sentinelRef} className="px-3 py-2 text-center text-xs text-muted">
+                {props.loadingMore ? 'Memuat lagi…' : 'Gulir untuk memuat lagi'}
+              </li>
+            ) : (
+              <li ref={sentinelRef} className="h-px" aria-hidden="true" />
+            )}
           </ul>
           {props.selectedIds.length > 0 ? (
             <div className="border-t border-line p-2">
               <button
                 type="button"
-                className="text-sm font-bold text-navy"
+                className="cursor-pointer text-sm font-bold text-navy"
                 onClick={() => props.onChange([])}
               >
                 Hapus pilihan

@@ -40,7 +40,7 @@ export function Pagination(props: Props) {
         <label className="flex items-center gap-2 text-sm text-navy">
           Data per halaman
           <select
-            className="rounded-lg border border-line bg-white px-2 py-1.5 text-navy"
+            className="cursor-pointer rounded-lg border border-line bg-white px-2 py-1.5 text-navy"
             value={props.pageSize}
             onChange={(event) =>
               props.onPageSizeChange(Number(event.target.value) as PageSize)
