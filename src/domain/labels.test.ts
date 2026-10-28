@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { boardRefreshLabel, formatAge } from './labels.ts'
+import { boardRefreshLabel, formatAge, formatSince, formatUpdatedAgo } from './labels.ts'
 
 describe('formatAge', () => {
   const now = 60_000
@@ -12,6 +12,33 @@ describe('formatAge', () => {
     expect(formatAge(now - 12_000, now)).toBe('12 detik lalu')
     expect(formatAge(now - 120_000, now)).toBe('2 menit lalu')
     expect(formatAge(now - 7_200_000, now)).toBe('2 jam lalu')
+  })
+})
+
+describe('formatUpdatedAgo', () => {
+  const now = Date.parse('2026-10-28T12:00:00Z')
+
+  it('counts seconds, then minutes with the leftover seconds', () => {
+    expect(formatUpdatedAgo('2026-10-28T11:59:48Z', now)).toBe(
+      'Diperbarui 12 detik yang lalu',
+    )
+    expect(formatUpdatedAgo('2026-10-28T11:58:40Z', now)).toBe(
+      'Diperbarui 1 menit 20 detik yang lalu',
+    )
+  })
+
+  it('uses hours once the report is at least an hour old', () => {
+    expect(formatUpdatedAgo('2026-10-28T09:55:10Z', now)).toBe(
+      'Diperbarui 2 jam 4 menit yang lalu',
+    )
+  })
+
+  it('says when the vehicle has no update time', () => {
+    expect(formatUpdatedAgo(null, now)).toBe('Diperbarui tidak ada waktu')
+  })
+
+  it('states the board age without the card prefix', () => {
+    expect(formatSince(now - 8_000, now)).toBe('8 detik yang lalu')
   })
 })
 

@@ -60,7 +60,7 @@ Nilai bawaan tidak ditulis: halaman 1 dan 10 baris. Trip disimpan sebagai `route
 
 Peta di dialog memakai MapLibre dan gaya OpenFreeMap Liberty (`https://tiles.openfreemap.org/styles/liberty`), tanpa API key. Berkas peta dimuat saat dialog dibuka. Garis pada peta adalah shape trip kendaraan itu. Penanda bergeser di sepanjang garis itu dari laporan posisi sebelumnya ke laporan baru, lalu berhenti di titik itu sampai laporan berikutnya.
 
-Halaman kendaraan yang sedang tampil dimuat ulang setiap 30 detik, termasuk saat menu filter atau dialog terbuka. Kartu tidak diredupkan. Jika pembaruan gagal, kartu terakhir tetap tampil. Kendaraan yang sedang dibuka diminta setiap 10 detik, dan kartunya memakai laporan yang lebih baru. Tulisan "Data dimuat pukul …" memakai jam komputer peninjau dan umur data itu. Waktu pada kartu memakai zona `America/New_York` dan berlabel "waktu Boston".
+Halaman kendaraan yang sedang tampil dimuat ulang setiap 30 detik, termasuk saat menu filter atau dialog terbuka. Kartu tidak diredupkan. Jika pembaruan gagal, kartu terakhir tetap tampil. Kendaraan yang sedang dibuka diminta setiap 10 detik, dan kartunya memakai laporan yang lebih baru. Waktu pada kartu dihitung dari laporan kendaraan, misalnya "Diperbarui 12 detik yang lalu" atau "Diperbarui 1 menit 20 detik yang lalu". Di samping judul, umur data yang dimuat tertulis "Diperbarui 12 detik yang lalu". Mengarahkan kursor ke umur itu menampilkan "Data dimuat pukul …" dengan jam komputer peninjau. Ikon info di sampingnya menampilkan "Diperbarui otomatis setiap 30 detik". Kalau pembaruan gagal, kalimat gagal tetap tertulis di bawah judul. Dialog tetap menampilkan waktu Boston.
 
 ## Cabang
 

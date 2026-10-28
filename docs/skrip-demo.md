@@ -20,7 +20,7 @@ Buka `mapVehicle` di `src/domain/mapResource.ts`.
 
 `included` digabung di sini menurut `type` dan `id`. Komponen hanya menerima `Vehicle`, `Route`, `Trip`, dan `Stop`. Satu kendaraan dari `GET /vehicles/{id}` datang sebagai objek, bukan array. `mapOneVehicle` menerima keduanya.
 
-Di browser, tunjuk satu kartu: label, status bahasa Indonesia plus kode mentah (`Dalam perjalanan` / `IN_TRANSIT_TO`, `Berhenti` / `STOPPED_AT`, `Akan tiba` / `INCOMING_AT`), lintang dan bujur, serta "Diperbarui … waktu Boston".
+Di browser, tunjuk satu kartu: label, status bahasa Indonesia plus kode mentah (`Dalam perjalanan` / `IN_TRANSIT_TO`, `Berhenti` / `STOPPED_AT`, `Akan tiba` / `INCOMING_AT`), lintang dan bujur, serta "Diperbarui … yang lalu".
 
 ## 2. Cara UI dibangun
 

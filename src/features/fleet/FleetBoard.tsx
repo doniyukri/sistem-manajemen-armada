@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { MultiSelect, type SelectOption } from '../../components/MultiSelect.tsx'
 import { Pagination } from '../../components/Pagination.tsx'
-import { boardRefreshLabel, routeShort, tripTitle } from '../../domain/labels.ts'
+import {
+  boardRefreshLabel,
+  formatLocalClock,
+  formatSince,
+  routeShort,
+  tripTitle,
+} from '../../domain/labels.ts'
 import { fresherVehicle, pruneTrips } from '../../domain/rules.ts'
 import {
   REFRESH_MS,
@@ -166,11 +172,10 @@ export function FleetBoard() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-20 border-b border-line bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:px-8">
+        <div className="mx-auto max-w-6xl px-4 py-4 sm:px-8">
           <p className="text-[1.375rem] font-bold leading-none text-navy">
             Sistem Manajemen Armada
           </p>
-          <p className="text-sm text-muted">Posisi kendaraan langsung dari API MBTA.</p>
         </div>
       </header>
       <main className="flex-1">
@@ -242,16 +247,65 @@ export function FleetBoard() {
             </div>
           </section>
 
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-            <h1 className="text-[1.75rem] font-bold leading-none text-navy">Kendaraan</h1>
-            <p className="text-sm text-muted">
-              {boardRefreshLabel({
-                updatedAt: vehiclesQuery.dataUpdatedAt,
-                now,
-                fetching: refreshing,
-                failed: refreshFailed,
-              })}
-            </p>
+          <div>
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+              <h1 className="text-[1.75rem] font-bold leading-none text-navy">
+                Kendaraan
+              </h1>
+              {vehiclesQuery.dataUpdatedAt > 0 ? (
+                <p className="flex items-center gap-1.5 text-xs text-quiet">
+                  <span className="group/tip relative cursor-help">
+                    Diperbarui {formatSince(vehiclesQuery.dataUpdatedAt, now)}
+                    <span
+                      role="tooltip"
+                      className="pointer-events-none absolute bottom-full left-0 z-20 mb-1.5 hidden w-max rounded-lg bg-navy px-2 py-1 text-xs text-white group-hover/tip:block"
+                    >
+                      Data dimuat pukul {formatLocalClock(vehiclesQuery.dataUpdatedAt)}
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    className="group/tip relative cursor-help text-quiet"
+                    aria-label={`Diperbarui otomatis setiap ${REFRESH_MS / 1000} detik`}
+                  >
+                    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                      <circle
+                        cx="8"
+                        cy="8"
+                        r="6.25"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      />
+                      <path
+                        d="M8 7.25 V11.25"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                      />
+                      <circle cx="8" cy="5" r="0.75" fill="currentColor" />
+                    </svg>
+                    <span
+                      role="tooltip"
+                      className="pointer-events-none absolute right-0 bottom-full z-20 mb-1.5 hidden w-max rounded-lg bg-navy px-2 py-1 text-xs text-white group-hover/tip:block group-focus-visible/tip:block"
+                    >
+                      Diperbarui otomatis setiap {REFRESH_MS / 1000} detik
+                    </span>
+                  </button>
+                </p>
+              ) : null}
+            </div>
+            {refreshFailed ? (
+              <p className="mt-2 text-sm text-muted" role="status">
+                {boardRefreshLabel({
+                  updatedAt: vehiclesQuery.dataUpdatedAt,
+                  now,
+                  fetching: refreshing,
+                  failed: refreshFailed,
+                })}
+              </p>
+            ) : null}
           </div>
 
           {initialLoading ? (
@@ -280,7 +334,7 @@ export function FleetBoard() {
             <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {vehicles.map((vehicle: Vehicle) => (
                 <li key={vehicle.id}>
-                  <VehicleCard vehicle={vehicle} onOpen={openVehicle} />
+                  <VehicleCard vehicle={vehicle} now={now} onOpen={openVehicle} />
                 </li>
               ))}
             </ul>
@@ -306,9 +360,8 @@ export function FleetBoard() {
         </div>
       </main>
       <footer className="border-t border-line bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-sm text-navy sm:flex-row sm:justify-between sm:px-8">
+        <div className="mx-auto max-w-6xl px-4 py-4 text-sm text-navy sm:px-8">
           <p>Doni Prima Yukri · Sistem Manajemen Armada</p>
-          <p className="text-muted">Data posisi dari MBTA</p>
         </div>
       </footer>
       {state.vehicleId ? (

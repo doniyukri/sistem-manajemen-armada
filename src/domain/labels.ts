@@ -51,6 +51,29 @@ export function formatLocalClock(timestamp: number): string {
   return localTime.format(timestamp)
 }
 
+function sincePhrase(then: number, now: number): string {
+  const totalSeconds = Math.floor(Math.max(0, now - then) / 1000)
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+  if (hours > 0) return `${hours} jam ${minutes} menit yang lalu`
+  if (minutes > 0) return `${minutes} menit ${seconds} detik yang lalu`
+  return `${seconds} detik yang lalu`
+}
+
+/** Card line. Seconds only under a minute, then minutes and leftover seconds. */
+export function formatUpdatedAgo(iso: string | null, now: number): string {
+  if (!iso) return 'Diperbarui tidak ada waktu'
+  const then = Date.parse(iso)
+  if (Number.isNaN(then)) return 'Diperbarui tidak ada waktu'
+  return `Diperbarui ${sincePhrase(then, now)}`
+}
+
+/** Age of the board fetch, without the "Diperbarui" prefix. */
+export function formatSince(then: number, now: number): string {
+  return sincePhrase(then, now)
+}
+
 export function formatAge(then: number, now: number): string {
   const elapsed = Math.max(0, now - then)
   if (elapsed < 5_000) return 'baru saja'
