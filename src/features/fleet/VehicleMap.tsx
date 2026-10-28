@@ -116,8 +116,8 @@ export function VehicleMap(props: Fix) {
 
   const routeNamed =
     props.shape != null && props.shape.length > 1
-      ? `Peta posisi armada ${props.label} beserta rute perjalanan`
-      : `Peta posisi armada ${props.label}`
+      ? `Peta posisi kendaraan ${props.label} beserta rute perjalanan`
+      : `Peta posisi kendaraan ${props.label}`
 
   useEffect(() => {
     const container = containerRef.current
@@ -341,7 +341,7 @@ export function VehicleMap(props: Fix) {
             setFollowing(true)
           }}
         >
-          Ikuti armada
+          Ikuti kendaraan
         </button>
       )}
     </section>
