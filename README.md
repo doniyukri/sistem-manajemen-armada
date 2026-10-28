@@ -1,62 +1,72 @@
 # Sistem Manajemen Armada
 
-Penulis: Doni Prima Yukri.
+**Penulis:** Doni Prima Yukri
 
-Aplikasi frontend hanya-baca untuk memantau posisi kendaraan. Data diambil dari [Vehicle API MBTA v3](https://api-v3.mbta.com/docs/swagger/index.html#/Vehicle/ApiWeb_VehicleController_index). Antarmuka berbahasa Indonesia.
+Aplikasi frontend *read-only* untuk memantau posisi kendaraan secara langsung. Seluruh data diambil dari [MBTA v3 Vehicle API](https://api-v3.mbta.com/docs/swagger/index.html#/Vehicle/ApiWeb_VehicleController_index) dan disajikan dalam antarmuka berbahasa Indonesia.
 
-Ini bukan armada TransJakarta. Warna dan huruf mengikuti bahasa desain [transjakarta.co.id](https://transjakarta.co.id/).
+> **Catatan:** Data yang tampil di sini bukanlah armada TransJakarta asli, melainkan transportasi publik di Boston (MBTA). Namun, palet warna dan tipografinya sengaja mengadaptasi gaya desain dari [transjakarta.co.id](https://transjakarta.co.id/).
 
-## Menjalankan
+## Cara Menjalankan
 
-Perlu Node.js 22. Tidak perlu API key.
+Pastikan sudah menginstal **Node.js 22**. Proyek ini bisa langsung dijalankan tanpa memerlukan API *key*.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Buka alamat yang dicetak Vite, biasanya `http://localhost:5173`.
+Setelah server menyala, buka URL yang ditampilkan oleh Vite (biasanya di `http://localhost:5173`).
 
-| Perintah          | Fungsi                                        |
-| ----------------- | --------------------------------------------- |
-| `npm test`        | Tes aturan query, total, dan pemangkasan trip |
-| `npm run lint`    | ESLint                                        |
-| `npm run build`   | Pemeriksaan tipe, lalu build produksi         |
-| `npm run preview` | Menayangkan hasil build                       |
+| Perintah | Fungsi |
+| :--- | :--- |
+| `npm test` | Menjalankan *unit test* untuk aturan *query*, perhitungan total data, dan pembersihan filter *trip* |
+| `npm run lint` | Mengecek kualitas kode dengan ESLint |
+| `npm run build` | Menjalankan *type-check*, lalu membungkus aplikasi untuk produksi |
+| `npm run preview` | Menjalankan hasil *build* produksi secara lokal |
 
-`npm install` memakai `.npmrc` (`legacy-peer-deps=true`). Pemeriksaan tipe memakai TypeScript 6 lewat perintah `tsc6`. Paket `typescript` di proyek ini adalah alias `@typescript/typescript6`.
+**Catatan instalasi & *tooling*:**
+Proses `npm install` menggunakan konfigurasi `.npmrc` (`legacy-peer-deps=true`). Untuk pengecekan tipe data, proyek ini memakai TypeScript 6 melalui perintah `tsc6` (paket `typescript` di sini merupakan alias untuk `@typescript/typescript6`).
 
-## Arsitektur
+## Arsitektur & Keputusan Teknis
 
-React, function components, hooks, dan Tailwind. TypeScript dalam mode strict. Tidak ada backend.
+Aplikasi ini dibangun murni di sisi frontend (tanpa backend tambahan) menggunakan React (*functional components* & *hooks*), Tailwind CSS, dan TypeScript dengan mode `strict`.
 
-### Mengambil data
+### Pengambilan & Pemetaan Data
 
-TanStack Query memegang fetch, cache, loading, dan error. Satu-satunya kode yang mengenal JSON:API ada di `src/api/mbta.ts`. `src/domain/mapResource.ts` menyambungkan `included` menjadi `Vehicle`, `Route`, `Trip`, dan `Stop`. Komponen tidak membaca payload mentah.
+Urusan *fetching*, *caching*, hingga penanganan status *loading* dan *error* dikelola sepenuhnya oleh **TanStack Query**. 
 
-Daftar kendaraan meminta `page[offset]`, `page[limit]`, `filter[route]`, `filter[trip]`, dan `include=route,trip,stop`. Beberapa rute digabung dengan OR. Beberapa trip digabung dengan OR. Kalau keduanya terisi, keduanya digabung dengan AND.
+Supaya komponen UI tetap bersih dan tidak bergantung pada bentuk mentah *response* API, logika pembacaan format JSON:API diisolasi di `src/api/mbta.ts`. Selanjutnya, `src/domain/mapResource.ts` bertugas merangkai data relasi dari properti `included` menjadi objek domain yang siap pakai (`Vehicle`, `Route`, `Trip`, dan `Stop`).
 
-Rute dan trip adalah dropdown multi-pilih. Opsinya dimuat 20 per permintaan, lalu bertambah saat digulir. `GET /trips` tanpa filter mengembalikan 400, jadi menu trip mati sampai sedikitnya satu rute dipilih. Daftar trip adalah jadwal rute itu, bukan hanya trip yang sedang ada kendaraannya. Trip tanpa kendaraan menampilkan "Tidak ada kendaraan untuk filter ini."
+Untuk daftar kendaraan, aplikasi mengirimkan parameter `page[offset]`, `page[limit]`, `filter[route]`, `filter[trip]`, serta `include=route,trip,stop`:
+- Memilih beberapa rute sekaligus akan digabung dengan logika **OR**.
+- Memilih beberapa *trip* sekaligus akan digabung dengan logika **OR**.
+- Jika rute dan *trip* keduanya dipilih, keduanya digabung dengan logika **AND**.
 
-### UI
+Filter rute dan *trip* dibuat dalam bentuk *dropdown multi-select* dengan *infinite scroll* (memuat 20 opsi per *request* saat digulir ke bawah). Karena *endpoint* `GET /trips` dari MBTA akan mengembalikan *error* `400` jika dipanggil tanpa filter rute, *dropdown trip* sengaja dikunci (*disabled*) sampai pengguna memilih minimal satu rute. Daftar *trip* yang muncul mewakili jadwal pada rute tersebut—jika kebetulan belum ada armada yang jalan di *trip* itu, layar akan menampilkan pesan *"Tidak ada kendaraan untuk filter ini."*
 
-Kendaraan tampil sebagai grid kartu: label, status (label Indonesia dan kode mentah), lintang dan bujur, serta waktu update terakhir. Di layar lebar kartunya dua kolom.
+### Tampilan Antarmuka (UI)
 
-Detail dibuka di dialog bawaan browser. Isinya label, status, koordinat, waktu update dalam waktu Boston, rute, trip, dan field tambahan. Peta memakai MapLibre dan gaya OpenFreeMap Liberty, tanpa API key. Penanda mengikuti shape trip dari laporan sebelumnya ke laporan baru, lalu berhenti.
+Daftar armada ditampilkan dalam bentuk *grid* kartu (otomatis menjadi 2 kolom di layar lebar). Setiap kartu memuat label armada, status perjalanan (dalam bahasa Indonesia beserta kode aslinya), koordinat lintang/bujur, dan waktu pembaruan terakhir.
 
-Papan, kedua menu, dan dialog masing-masing punya indikator loading dan pesan error yang bisa dicoba lagi.
+Saat salah satu kartu diklik, detail lengkapnya akan terbuka lewat elemen `<dialog>` bawaan browser. Di dalamnya terdapat informasi koordinat, waktu pembaruan (mengikuti zona waktu Boston), rute, *trip*, serta peta interaktif. Peta ini menggunakan **MapLibre** dengan *tile style* dari OpenFreeMap Liberty sehingga tidak membutuhkan API *key*. Pergerakan penanda (*marker*) kendaraan dianimasikan mengikuti jalur (*shape*) *trip* dari posisi laporan sebelumnya menuju posisi terbaru.
 
-### Paginasi
+Daftar utama, kedua *dropdown* filter, dan modal detail masing-masing memiliki indikator *loading* serta tampilan *error* terpisah lengkap dengan tombol *retry*.
 
-Halaman diatur di server lewat `page[offset]` dan `page[limit]`. Ukuran halaman 5, 10, 20, atau 50. Bawaannya 10. Rentang yang tampil berbunyi "Menampilkan {awal}–{akhir} dari {total} data", disertai jumlah halaman dan tombol pindah halaman.
+### Siasat Paginasi
 
-API tidak mengirim jumlah total. `links.last` hanya membawa offset halaman terakhir. Jumlah pasti adalah offset itu ditambah jumlah baris di halaman terakhir, jadi aplikasi mengirim satu permintaan tambahan ke halaman itu. Hasilnya disimpan sampai filter atau ukuran halaman berubah. Sebelum permintaan selesai, rentang menampilkan `…`.
+Paginasi dilakukan di sisi server (*server-side*) memanfaatkan `page[offset]` dan `page[limit]` dengan pilihan ukuran 5, 10 (bawaan), 20, atau 50 baris per halaman. Info halaman ditulis dengan format *"Menampilkan {awal}–{akhir} dari {total} data"*.
 
-## Susunan folder
+Tantangannya, API MBTA tidak menyediakan angka total data secara langsung—properti `links.last` hanya memberikan nilai *offset* untuk halaman paling akhir. Untuk mendapatkan angka total yang akurat, aplikasi melakukan satu *request* tambahan di belakang layar ke halaman terakhir tersebut, lalu menjumlahkan nilai *offset*-nya dengan jumlah data yang ada di halaman terakhir. Hasil perhitungan ini disimpan di *cache* sampai pengguna mengubah filter atau ukuran halaman. Selama angka total masih dihitung, teks total akan menampilkan `…`.
 
-- `src/api/` adapter MBTA.
-- `src/domain/` tipe, pemetaan JSON:API, dan aturan yang tidak mengenal React.
-- `src/features/fleet/` papan, hook query, dialog, dan peta.
-- `src/components/` dropdown, chip status, dan paginasi.
+## Struktur Folder & State URL
 
-Halaman, ukuran halaman, rute, trip, dan kendaraan yang sedang dibuka ada di query string. Contoh: `?page=2&pageSize=20&routes=Red,1&trips=Red~78182069&vehicle=y1912`. Halaman 1 dan 10 baris tidak ditulis. Trip disimpan sebagai `routeId~tripId`. Menghapus sebuah rute ikut menghapus trip yang hanya milik rute itu.
+- `src/api/` — Adapter dan konfigurasi pemanggilan API MBTA.
+- `src/domain/` — Definisi tipe data, pemetaan JSON:API, dan logika bisnis murni (tanpa ketergantungan pada React).
+- `src/features/fleet/` — Halaman daftar armada, *custom hooks* untuk *query*, dialog detail, dan komponen peta.
+- `src/components/` — Komponen UI yang dapat digunakan ulang (*dropdown*, *chip* status, dan kontrol paginasi).
+
+Seluruh *state* navigasi—mulai dari halaman aktif, ukuran halaman, pilihan rute, pilihan *trip*, hingga ID kendaraan yang sedang dibuka—disinkronkan langsung ke *query string* di URL agar mudah dibagikan:
+
+`?page=2&pageSize=20&routes=Red,1&trips=Red~78182069&vehicle=y1912`
+
+Nilai bawaan (`page=1` dan `pageSize=10`) sengaja tidak ditulis ke URL agar tetap ringkas. Data *trip* disimpan dengan format `routeId~tripId` supaya ketika sebuah rute dihapus dari filter, seluruh *trip* yang terkait dengan rute tersebut bisa otomatis ikut dibersihkan.
