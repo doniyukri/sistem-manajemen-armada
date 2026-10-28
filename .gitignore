@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 .impeccable/config.local.json
+.impeccable/mocks/
+.impeccable/review/
 
 # Editor directories and files
 .vscode/*
